@@ -15,6 +15,9 @@
 
     // TODO: Vérifier que la création d'objets SpeedCheck est Possible
 
+    var voiture1 = createSpeedCheck();
+    voiture1.speed.set(90);
+    voiture1.speed.get();
 
     // TODO: Vérifier que les objets créés directement avec creatSpeedCheck ne sont pas utilisables :
     // speed0 = creatSpeedCheck();
