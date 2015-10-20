@@ -19,7 +19,7 @@
     // TODO: Vérifier que les objets créés directement avec creatSpeedCheck ne sont pas utilisables :
     // speed0 = creatSpeedCheck();
     // speed0.speed = 42; // SHOULD throw a SpeedCheckError.
-    // speed0.licencePlate = '3-DFE-456'; // SOULD throw a SpeedCheckError.
+    // speed0.licencePlate = '3-DFE-456'; // SHOULD throw a SpeedCheckError.
 
 
     // TODO: Vérifier que TOUTES les fonctionnalités de createSpeedCheckFR sont correctes (effects de bords, valeurs négatives, etc.) pour tous les attributs (speed et licencePlate)
