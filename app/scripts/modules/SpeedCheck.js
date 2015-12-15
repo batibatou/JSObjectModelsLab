@@ -38,8 +38,11 @@
               }
           },
           toString: {
-              /* TODO: Implement this function */
-          },
+            value: function()
+          {
+                  return "Véhicule " + this._licencePlate + " roule à " + this._speed + " km/h. " + ((this._infraction) ? "Infraction!" : "Ça va, circulez...");
+          }
+        },
           infraction: {
               get: function() {
                   return this._infraction || false;
