@@ -14,15 +14,54 @@
     });
 
     // TODO: Vérifier que la création d'objets SpeedCheck est Possible
+    test('Test objects creating', function() {
+      notEqual(createSpeedCheck(), null, 'Création objets OK');
+      notEqual(createSpeedCheckFR(), null, 'Création objets FR OK');
+      notEqual(createSpeedCheckBE(), null, 'Création objets BE OK');
+    });
 
-    var voiture1 = createSpeedCheck();
-    voiture1.speed.set(90);
-    voiture1.speed.get();
+    // TODO: Vérifier que les objets créés directement avec createSpeedCheck ne sont pas utilisables :
 
-    // TODO: Vérifier que les objets créés directement avec creatSpeedCheck ne sont pas utilisables :
-    // speed0 = creatSpeedCheck();
-    // speed0.speed = 42; // SHOULD throw a SpeedCheckError.
-    // speed0.licencePlate = '3-DFE-456'; // SHOULD throw a SpeedCheckError.
+     test('Test objets createSpeedCheck', function() {
+            var mySpeed = createSpeedCheck();
+            throws(function() { mySpeed.speed = 42; }, "Speed editing - SHOULD throw a SpeedCheckError");
+            throws(function() { mySpeed.licencePlate = '3-DFE-456'; }, "Licence plate editing - SHOULD throw a SpeedCheckError");
+
+          });
+
+
+
+
+
+    test('Test functions createSpeedCheckFR & BE', function(){
+      var mySpeedFR = createSpeedCheckFR();
+      equal(mySpeedFR.speed, 0, 'base OK');
+      mySpeedFR.speed=42;
+      equal(mySpeedFR.speed, 42, 'modif speed OK');
+      throws(function() {mySpeedFR.speed = -42;}, "Vitesse négative - SHOULD throw a SpeedCheckError");
+      equal(mySpeedFR.licencePlate, "???", 'base plate OK');
+      mySpeedFR.licencePlate = "AB121AB";
+      equal(mySpeedFR.licencePlate, "AB121AB", 'base plate OK');
+      throws(function() {mySpeedFR.licencePlate = AAA112EE}, "Plaque invalide - SHOUL throw a SpeedCheckError");
+      throws(function() {mySpeedFR.licencePlate = AA112EEE}, "Plaque invalide - SHOUL throw a SpeedCheckError");
+      throws(function() {mySpeedFR.licencePlate = AA1112EE}, "Plaque invalide - SHOUL throw a SpeedCheckError");
+      equal(mySpeedFR.infraction, false, "infraction OK");
+      equal(mySpeedFR.toString(),"Véhicule AB121AB roule à 42 km/h. Ça va, circulez...", ' No Infraction 42km/h OK')
+      mySpeedFR.speed=132;
+      equal(mySpeedFR.infraction, true, "infraction OK");
+      equal(mySpeedFR.toString(),"Véhicule AB121AB roule à 132 km/h. Infraction!", 'Infraction 132km/h OK')
+
+      var mySpeedBE = createSpeedCheckBE();
+      equal(mySpeedBE.speed, 0, 'base OK');
+      mySpeedBE.speed=42;
+      equal(mySpeedBE.speed, 42, 'modif speed OK');
+      throws(function() {mySpeedBE.speed = -42;}, "Vitesse négative - SHOULD throw a SpeedCheckError");
+      equal(mySpeedBE.licencePlate, "???", 'base plate OK');
+
+      throws(function() {mySpeedBE.licencePlate = AAA}, "Plaque invalide - SHOUL throw a SpeedCheckError");
+
+
+    });
 
 
     // TODO: Vérifier que TOUTES les fonctionnalités de createSpeedCheckFR sont correctes (effects de bords, valeurs négatives, etc.) pour tous les attributs (speed et licencePlate)
@@ -42,12 +81,12 @@
     /*---------------------------------*/
     /*  PART TWO: The "Shapes" module  */
     /*---------------------------------*/
-    var roadAttr, amenityAttr, buildingAttr, naturalAttr;
+        var roadAttr, amenityAttr, buildingAttr, naturalAttr;
     module('Unit Testing The "Shapes" Module', {
       beforeEach: function(){
         roadAttr = JSON.parse('{ \
           "building": false, \
-          "highway": "residential", \
+          "highway": "Residential", \
           "_id": "-629863", \
           "nodes": [{ \
               "y": 369.0, \
@@ -115,7 +154,7 @@
     });
 
     test('Test proper hidding of properties', function() {
-      expect(4);
+      expect(5);
       var shape0 = window.Shapes.createShape(roadAttr);
       var prop;
       var props = [];
@@ -124,19 +163,20 @@
           props.push(prop);
         }
       }
-      // Only 3 properties SHOULD be  visible
-      //{ id: [Function], toString: [Function], toSVGPath: [Function] }
-      equal(props.length, 3, 'Only 3 properties SHOULD be  visible in objects created by "createShape"');
-      for(prop in props){
-        ok(prop === 'id' || prop === 'toString' || prop === 'toSVGString', 'One of "id" "toString" or "toSVGString"');
-      }
+      // Only 4 properties SHOULD be  visible
+      //{ id: [Function], toString: [Function], toSVGPath: [Function], getName: [Function] }
+      equal(props.length, 4, 'Only 4 properties SHOULD be  visible in objects created by "createShape"');
+      props.forEach(function(prop){
+        ok(prop === 'id' || prop === 'toString' || prop === 'toSvgPath' || 'getName', 'One of "id" "toString", "toSvgPath" or "getName"');
+      });
+
     });
 
 
     test('Test the toSVGString method', function() {
       expect(1);
       var shape0 = window.Shapes.createShape(roadAttr);
-      equal(shape0.toSVGString(), 'M 708.0 369.0 L 743.0 396.0', 'Should create a valid SVG PATH (google SVG PATH for details)');
+      equal(shape0.toSvgPath(), 'M 708 369 L 743 396', 'Should create a valid SVG PATH (google SVG PATH for details)');
     });
 
     test('Test the name accessor', function() {
@@ -154,8 +194,8 @@
     test('Test objects created with the createRoad function', function() {
       expect(2);
       var road = window.Shapes.createRoad(roadAttr);
-      ok(typeof road.getCaterogy === 'function', 'Object Created with "createRoad" Should have a getCategory function');
-      equal(road.getCaterogy(),'Residential', 'Should return the value corresponding to the "highway" property in the attributes');
+      ok(typeof road.getCategory === 'function', 'Object Created with "createRoad" Should have a getCategory function');
+      equal(road.getCategory(),'Residential', 'Should return the value corresponding to the "highway" property in the attributes');
     });
 
     test('Test the createAmenity function', function() {
@@ -175,7 +215,7 @@
     });
 
     test('Test objects created with the  createBuilding function', function() {
-      expect(3);
+      expect(2);
       var building = window.Shapes.createBuilding(buildingAttr);
       ok(typeof building.getArea === 'function', 'Object Created with "createBuilding" Should have a getArea function');
       equal(building.getArea(),10000, 'Should return the area of the building computed from the set of points in the nodes attributes');
@@ -202,7 +242,7 @@
     /*-----------------------------------*/
 
     // TODO Write the whole test module for testing with the app/data/eure.json file.
-
+    var obj;
     module('Asynchronous Unit Test Module', {
         setup: function() {
             stop();
